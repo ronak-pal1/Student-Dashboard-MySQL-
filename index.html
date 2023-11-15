@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mysql student</title>
+    <link href="styles.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <div class="container">
+      <table id="mainTable"></table>
+    </div>
+
+    <script>
+      const display = (data, keys) => {
+        data.map((obj) => {
+          // combining the other fileds
+          let dataHTML = "";
+          keys.forEach((key) => {
+            dataHTML += `<td>${obj[key]}</td>`;
+          });
+
+          // putting the code in the html
+          document.getElementById(
+            "mainTable"
+          ).innerHTML += `<tr key=${obj.id}>${dataHTML}</tr>`;
+        });
+      };
+
+      const dataFun = async () => {
+        // creating the option for fetching
+        const options = {
+          mode: "cors",
+          method: "GET",
+          Accept: "application/json",
+          headers: { "Content-Type": "application/json" },
+        };
+
+        const response = await fetch("http://localhost:3000/info", options)
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+
+            // getting all the key values i.e. the headers
+            const keys = Object.keys(data[0]);
+
+            // now combining all the keys to make the table header HTML code
+            let headerHTML = "";
+            keys.forEach((key) => {
+              headerHTML += `<th>${key}</th>`;
+            });
+
+            // putting the code in the html file
+            document.getElementById(
+              "mainTable"
+            ).innerHTML += `<tr>${headerHTML}</tr>`;
+
+            display(data, keys);
+          })
+          .catch((err) => console.log(err));
+      };
+      dataFun();
+    </script>
+  </body>
+</html>
